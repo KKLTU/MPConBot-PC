@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-// Test Changes
-
 namespace MPConBot
 {
     // This class is responsible of running the server side on the PC. 
