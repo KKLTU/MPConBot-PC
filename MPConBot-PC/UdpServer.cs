@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace MPConBot
 {
-    // This class is responsible of running the server side on the PC. 
+// This class is responsible of running the server side on the PC. 
     class UdpServer
     {
         static void Main(string[] args)
@@ -26,8 +26,31 @@ namespace MPConBot
                 string stringData = Encoding.ASCII.GetString(data, 0, data.Length);
                 Console.WriteLine("Response from " + sender.Address);
                 Console.WriteLine("Message " + i++ + ": " + stringData + "\n");
+
+                // Here I am sending back
+                byte[] data2 = Encoding.ASCII.GetBytes("Response");
+                serverSocket.Send(data2, 8, sender);
+                // try using sockets
             }
 
         }
     }
+
+
 }
+
+
+//byte[] UdpPacket = new byte[1024];
+//UdpClient serverSocket = new UdpClient(15000);
+//int id = 0;
+
+//            while (true)
+//            {
+//                Console.WriteLine("Waiting for a UDP client...");
+//                IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
+//UdpPacket = serverSocket.Receive(ref sender);
+
+//                string stringInPacket = Encoding.ASCII.GetString(UdpPacket, 0, UdpPacket.Length);
+//Console.WriteLine("Response from " + sender.Address);
+//                Console.WriteLine("Message " + id++ + ": " + stringInPacket + "\n");
+//            }
