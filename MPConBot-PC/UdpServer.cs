@@ -43,7 +43,7 @@ namespace MPConBot
                 //Capture capture = new Capture();
                 //Image<Bgr, Byte> frame;
                 //byte[] dataToSend;
-                while (true)
+                while (true)//
                 {
                     frame = capture.QueryFrame();
                     var ms = new MemoryStream();
