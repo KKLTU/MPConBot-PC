@@ -32,6 +32,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV">
       <HintPath>..\..\..\..\..\..\EmguCV-Version-2.2.1.1150\bin\Emgu.CV.dll</HintPath>
@@ -72,6 +92,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cvextern.dll" />
+    <Content Include="Emgu.CV.DebuggerVisualizers.VS2008.dll" />
+    <Content Include="Emgu.CV.DebuggerVisualizers.VS2010.dll" />
+    <Content Include="Emgu.CV.dll" />
+    <Content Include="Emgu.CV.GPU.dll" />
+    <Content Include="Emgu.CV.ML.dll" />
+    <Content Include="Emgu.CV.UI.dll" />
+    <Content Include="Emgu.Util.dll" />
+    <Content Include="opencv_calib3d220.dll" />
+    <Content Include="opencv_contrib220.dll" />
+    <Content Include="opencv_core220.dll" />
+    <Content Include="opencv_features2d220.dll" />
+    <Content Include="opencv_flann220.dll" />
+    <Content Include="opencv_gpu220.dll" />
+    <Content Include="opencv_highgui220.dll" />
+    <Content Include="opencv_imgproc220.dll" />
+    <Content Include="opencv_legacy220.dll" />
+    <Content Include="opencv_ml220.dll" />
+    <Content Include="opencv_objdetect220.dll" />
+    <Content Include="opencv_video220.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

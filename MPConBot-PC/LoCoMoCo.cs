@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO.Ports;
 
 namespace L2Bot_Controller
@@ -66,12 +63,12 @@ namespace L2Bot_Controller
 
         public void turnright()
         {
-            move(FORWARD, STOP);
+            move(FORWARD, BACKWARD);
         }
 
         public void turnleft()
         {
-            move(STOP, FORWARD);
+            move(BACKWARD, FORWARD);
         }
 
         public void close()
