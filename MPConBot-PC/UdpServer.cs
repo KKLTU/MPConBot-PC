@@ -85,87 +85,80 @@ namespace MPConBot
         static void Main(string[] args)
         {
             Capture capture = new Capture();
-            byte[] dataReceived = new byte[1024];
-            LoCoMoCo MyBot = new LoCoMoCo("COM4"); // com port number
-            var VideoStreamToken = new CancellationTokenSource(); //create token for the cancel
-            UdpClient serverSocket = new UdpClient(15000);
-            string stringData = "";
-            int i = 0;
+            
+            LoCoMoCo MyBot = new LoCoMoCo("COM3"); // com port number
+            //var VideoToken = new CancellationTokenSource(); //create token for the cancel
+            var MainToken = new CancellationTokenSource(); //create token for the cancel
+            //var VideoStreamToken = new CancellationTokenSource(); //create token for the cancel
 
-            while (true) // this while for keeping the server "listening"
+            UdpClient MainServerSocket = new UdpClient(15000);
+            UdpClient VideoServerSocket = new UdpClient(16000);
+            UdpClient L2BotServerSocket = new UdpClient(17000);
+            byte[] MainDataReceived = new byte[1024];
+            //byte[] VideoDataReceived = new byte[1024];
+            //byte[] L2BotDataReceived = new byte[1024];
+            string MainStringData = "";
+            //string VideoStringData = "";
+            //string L2BotStringData = "";
+
+            int TotalMessageCount = 0;
+
+            while (true) // this while for keeping the main server "listening"
             {
                 try {
-                    Console.WriteLine("Waiting for a UDP client...");                                   // display stuff
-                    IPEndPoint client = new IPEndPoint(IPAddress.Any, 0);                               // prepare
-                    dataReceived = serverSocket.Receive(ref client);                                    // receive packet
-                    stringData = Encoding.ASCII.GetString(dataReceived, 0, dataReceived.Length);        // get string from packet
-                    Console.WriteLine("Response from " + client.Address);                               // display stuff
-                    Console.WriteLine("Message " + i++ + ": " + stringData + "\n");                     // display client's string
+                        Console.WriteLine("Waiting for a UDP client...");                                   // display stuff
+                        // IPEndPoint client = new IPEndPoint(IPAddress.Any, 0);
+                        IPEndPoint MainClient = new IPEndPoint(IPAddress.Any,0);
+                        MainDataReceived = MainServerSocket.Receive(ref MainClient);                                // receive packet
+                        MainStringData = Encoding.ASCII.GetString(MainDataReceived, 0, MainDataReceived.Length);        // get string from packet
+                        Console.WriteLine("Response from " + MainClient.Address);                               // display stuff
+                        Console.WriteLine("Message " + TotalMessageCount++ + ": " + MainStringData + "\n");                     // display client's string
 
-                    if (stringData.Equals("StartV"))
-                    {
-                        VideoStreamToken = new CancellationTokenSource();
-                        Task.Run(() => StartVideoStream(serverSocket, client), VideoStreamToken.Token); //start method on another thread
-                    }
+                        if (MainStringData.Equals("Picture"))
+                        {
+                            MainToken = new CancellationTokenSource();
+                            Task.Run(() => SendPicture(MainServerSocket, MainClient), MainToken.Token); //start method on another thread
+                        }
 
-                    if (stringData.Equals("StopV"))
-                        VideoStreamToken.Cancel();
+                        if (MainStringData.Equals("StopV"))
+                            MainToken.Cancel();
 
-                    if (stringData.Equals("Forward"))
-                        MyBot.forward();
+                        if (MainStringData.Equals("Forward"))
+                            MyBot.forward();
 
-                    if (stringData.Equals("Backward"))
-                        MyBot.backward();
+                        if (MainStringData.Equals("Backward"))
+                            MyBot.backward();
 
-                    if (stringData.Equals("Left"))
-                        MyBot.turnleft();
+                        if (MainStringData.Equals("Left"))
+                            MyBot.turnleft();
 
-                    if (stringData.Equals("Right"))
-                        MyBot.turnright();
+                        if (MainStringData.Equals("Right"))
+                            MyBot.turnright();
 
-                    if (stringData.Equals("Stop"))
-                        MyBot.stop();
+                        if (MainStringData.Equals("Stop"))
+                            MyBot.stop();
 
                 } catch (Exception e)
-                { }
+                    { }
             }
         }
 
-        static public void StartVideoStream(UdpClient serverSocket, IPEndPoint client)
+        static public void SendPicture(UdpClient MainSocket, IPEndPoint MainClient)
         {
-
-            //int i = 0;
-            //byte[] dataToSend;
-            //while (true)
-            //{
-            //    Thread.Sleep(50);
-            //    try
-            //    {
-            //        dataToSend = Encoding.ASCII.GetBytes(i.ToString());
-            //        serverSocket.Send(dataToSend, dataToSend.Length, client);
-            //        i++;
-            //    }
-            //    catch (Exception e)
-            //    { }
-            //}
-
             Capture capture = new Capture();
             Image<Bgr, Byte> frame;
             byte[] dataToSend;
-            while (true)
+            Thread.Sleep(500);
+            try
             {
-                Thread.Sleep(50);
-                try
-                {
-                    frame = capture.QueryFrame();
-                    var ms = new MemoryStream();
-                    frame.Bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);                  // save it in the memory stream
-                    dataToSend = ms.ToArray();                                                      // convert to byte 
-                    serverSocket.Send(dataToSend, dataToSend.Length, client);                       // Here I am sending back
-                }
-                catch (Exception e)
-                { }
+                frame = capture.QueryFrame();
+                var ms = new MemoryStream();
+                frame.Bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);                  // save it in the memory stream
+                dataToSend = ms.ToArray();                                                      // convert to byte 
+                MainSocket.Send(dataToSend, dataToSend.Length, MainClient);                       // Here I am sending back
             }
+            catch (Exception e)
+            { }
         }
     }
 }
