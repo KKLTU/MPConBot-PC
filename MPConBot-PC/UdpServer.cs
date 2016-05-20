@@ -53,19 +53,19 @@ namespace MPConBot
                     if (MainStringData.Equals("StopV"))
                         MainToken.Cancel();
 
-                    if (MainStringData.Equals("Forward"))
+                    else if (MainStringData.Equals("Forward"))
                         MyBot.forward();
 
-                    if (MainStringData.Equals("Backward"))
+                    else if (MainStringData.Equals("Backward"))
                         MyBot.backward();
 
-                    if (MainStringData.Equals("Left"))
+                    else if (MainStringData.Equals("Left"))
                         MyBot.turnleft();
 
-                    if (MainStringData.Equals("Right"))
+                    else if (MainStringData.Equals("Right"))
                         MyBot.turnright();
 
-                    if (MainStringData.Equals("Stop"))
+                    else if (MainStringData.Equals("Stop"))
                         MyBot.stop();
 
                 } catch (Exception e)
@@ -87,6 +87,7 @@ namespace MPConBot
             catch (Exception e)
             {
                 Console.WriteLine("Couldn't Capture Frame.\n");
+                //SendPicture(MainSocket, MainClient, frame);
             }
         }
 
