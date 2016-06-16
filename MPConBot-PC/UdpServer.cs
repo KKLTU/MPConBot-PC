@@ -1,4 +1,7 @@
-﻿
+﻿/*This application was Designed, Implemented and Tested by Khalil Khalaf Lawrence Technological Univeristy Spring 2016
+This is the Server part of the Multi Purpose Connected Robot Senrior Project for the Masters of Computer Science in Intelligent Systems
+For any additional Information or questions: KhalafKhalil@gmail.com*/
+
 using System;
 using System.Text;
 using System.Net;
@@ -10,7 +13,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using L2Bot_Controller;
 
-
 namespace MPConBot
 {
     class UdpServer
@@ -21,32 +23,30 @@ namespace MPConBot
             LoCoMoCo MyBot = new LoCoMoCo("COM3"); // com port number
             var MainToken = new CancellationTokenSource(); //create token for the cancel
 
-            UdpClient MainServerSocket = new UdpClient(15000);
-            UdpClient VideoServerSocket = new UdpClient(16000);
-            UdpClient L2BotServerSocket = new UdpClient(17000);
-            byte[] MainDataReceived = new byte[1024];
+            UdpClient MainServerSocket = new UdpClient(15000); // declare a client
+            byte[] MainDataReceived = new byte[1024]; // prepare container for received data
             string MainStringData = "";
 
 
-            Capture capture = new Capture();
-            Image<Bgr, Byte> frame;
+            Capture capture = new Capture(); // declare object for camera
+            Image<Bgr, Byte> frame; // declare image for capture
             int TotalMessageCount = 0;
 
             while (true) // this while for keeping the main server "listening"
             {
                 try {
-                    // Thread.Sleep(100);
+
                     frame = capture.QueryFrame();
-                    Console.WriteLine("Waiting for a UDP client...");                                   // display stuff
-                    IPEndPoint MainClient = new IPEndPoint(IPAddress.Any,0);
-                    MainDataReceived = MainServerSocket.Receive(ref MainClient);                                // receive packet
-                    MainStringData = Encoding.ASCII.GetString(MainDataReceived, 0, MainDataReceived.Length);        // get string from packet
-                    Console.WriteLine("Response from " + MainClient.Address);                               // display stuff
-                    Console.WriteLine("Message " + TotalMessageCount++ + ": " + MainStringData + "\n");                     // display client's string
+                    Console.WriteLine("Waiting for a UDP client..."); // display stuff
+                    IPEndPoint MainClient = new IPEndPoint(IPAddress.Any,0); // prepare a client
+                    MainDataReceived = MainServerSocket.Receive(ref MainClient); // receive packet
+                    MainStringData = Encoding.ASCII.GetString(MainDataReceived, 0, MainDataReceived.Length); // get string from packet
+                    Console.WriteLine("Response from " + MainClient.Address); // display stuff
+                    Console.WriteLine("Message " + TotalMessageCount++ + ": " + MainStringData + "\n"); // display client's string
 
                     if (MainStringData.Equals("Picture"))
                     {
-                        MainToken = new CancellationTokenSource();
+                        MainToken = new CancellationTokenSource(); // new cancellation token every iteration
                         Task.Run(() => SendPicture(MainServerSocket, MainClient, frame), MainToken.Token); //start method on another thread
                     }
 
@@ -77,30 +77,17 @@ namespace MPConBot
         {
             try
             {
-                var ms = new MemoryStream();
-                frame.Bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);                  // save it in the memory stream
+                var MemorySt = new MemoryStream();
+                frame.Bitmap.Save(MemorySt, System.Drawing.Imaging.ImageFormat.Jpeg); // take a frame and save it in the memory stream
                 byte[] dataToSend;
-                dataToSend = ms.ToArray();                                                       // convert to byte 
-                MainSocket.Send(dataToSend, dataToSend.Length, MainClient);                      // Here I am sending back
-                //MainSocket.Close();
+                dataToSend = MemorySt.ToArray(); // convert memory to byte 
+                MainSocket.Send(dataToSend, dataToSend.Length, MainClient); // Send a packet
             }
             catch (Exception e)
             {
                 Console.WriteLine("Couldn't Capture Frame.\n");
-                //SendPicture(MainSocket, MainClient, frame);
             }
         }
-
-        static public void StartCamera()
-        {
-            while (true)
-            {
-                //Capture capture = new Capture();
-                //Thread.Sleep(100);
-                //frame = capture.QueryFrame();
-            }
-        }
-
     }
 }
 
